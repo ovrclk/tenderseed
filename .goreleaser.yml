@@ -1,0 +1,39 @@
+before:
+  hooks:
+    - go mod download
+builds:
+  - id: tenderseed
+    main: ./cmd/tenderseed
+    goarch: [amd64, arm64]
+    goos: [linux, darwin]
+    ignore:
+      - goos: darwin
+        goarch: 386
+    env:
+    - CGO_ENABLED=0
+
+archives:
+  - id: tenderseed
+    wrap_in_directory: true
+    builds:
+      - tenderseed
+    files:
+      - none*
+
+release:
+  github:
+    owner: ovrclk
+    name: tenderseed
+  prerelease: auto
+  draft: false
+
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
